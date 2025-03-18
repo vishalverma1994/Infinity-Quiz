@@ -5,6 +5,13 @@ import com.infinityquiz.quizModule.domain.model.Content
 import com.infinityquiz.quizModule.domain.model.Question
 
 
+/**
+ * Data Transfer Object (DTO) representing a quiz question.
+ *
+ * This class is used to transfer quiz question data, typically
+ * when communicating with a backend service or when serializing/deserializing
+ * quiz data to/from JSON format using Gson.
+ */
 data class QuizDto(
 
     @SerializedName("uuidIdentifier") var uuidIdentifier: String? = null,
@@ -20,6 +27,15 @@ data class QuizDto(
 
 )
 
+/**
+ * Converts a [QuizDto] object to a [Question] object.
+ *
+ * This function maps the properties of a [QuizDto] to a [Question],
+ * providing default values for properties that might be null in the [QuizDto].
+ *
+ * @receiver QuizDto The source QuizDto object to convert.
+ * @return Question A new Question object populated with data from the QuizDto.
+ */
 fun QuizDto.toQuestion(): Question {
     return Question(
         uuidIdentifier = uuidIdentifier ?: "",
@@ -32,7 +48,7 @@ fun QuizDto.toQuestion(): Question {
         correctOption = correctOption ?: 0,
         solution = solutionDto.map {
             Content(contentType = it.contentType ?: "", contentData = it.contentData ?: "")
-        })
+        }, sort = sort ?: 0)
 }
 
 

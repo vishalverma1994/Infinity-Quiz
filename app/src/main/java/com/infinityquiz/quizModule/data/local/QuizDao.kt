@@ -7,6 +7,11 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.infinityquiz.quizModule.data.dto.QuizDto
 
+/**
+ * Data Access Object (DAO) interface for interacting with the Quiz entity in the Room database.
+ * This interface provides methods for bookmarking, removing bookmarks, retrieving bookmarked quizzes,
+ * and checking if a specific question is bookmarked.
+ */
 @Dao
 interface QuizDao {
 

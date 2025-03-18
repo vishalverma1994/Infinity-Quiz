@@ -22,12 +22,46 @@ import javax.inject.Singleton
 @Module
 object NetworkModule {
 
+    /**
+     * Provides a singleton instance of Gson.
+     *
+     * Gson is a Java library that can be used to convert Java Objects into their JSON representation.
+     * It can also be used to convert a JSON string to an equivalent Java object.
+     *
+     * This function is annotated with:
+     *   - `@Provides`: Indicates that this function provides a dependency that can be injected by Dagger.
+     *   - `@Singleton`: Indicates that this function should provide a single instance of Gson throughout the application's lifecycle.
+     *
+     * @return A singleton instance of Gson.
+     */
     @Provides
     @Singleton
     fun provideGson(): Gson {
         return Gson()
     }
 
+    /**
+     * Provides a configured Retrofit instance for making network requests.
+     *
+     * This function builds a Retrofit instance with the specified base URL,
+     * OkHttpClient for network handling, and Gson for JSON serialization/deserialization.
+     *
+     * The Retrofit instance is configured with:
+     *   - A base URL, defined by the [BASE_URL] constant.
+     *   - An [OkHttpClient] instance for handling network requests and responses. This can include
+     *     interceptors for logging, headers, or other custom behaviors.
+     *   - A [GsonConverterFactory] to convert JSON responses to Kotlin objects (and vice-versa)
+     *     using a provided [Gson] instance.
+     *
+     * This function is annotated with:
+     *   - `@Provides`: Indicates that this function provides a dependency that can be injected.
+     *   - `@Singleton`: Indicates that a single instance of Retrofit should be created and shared
+     *     throughout the application's lifecycle.
+     *
+     * @param okHttpClient The OkHttpClient instance to use for network requests.
+     * @param gson The Gson instance to use for JSON serialization/deserialization.
+     * @return A configured Retrofit instance.
+     */
     @Provides
     @Singleton
     fun provideRetrofit(okHttpClient: OkHttpClient, gson: Gson): Retrofit {
@@ -38,6 +72,9 @@ object NetworkModule {
             .build()
     }
 
+    /**
+     * Provides a singleton instance of OkHttpClient configured with caching and interceptors.
+     */
     @Provides
     @Singleton
     fun provideOkHttpClient(@ApplicationContext context: Context): OkHttpClient {
@@ -48,6 +85,19 @@ object NetworkModule {
             .build()
     }
 
+    /**
+     * Provides an instance of the [QuizApi] service.
+     *
+     * This function is a Dagger provider method that creates and returns an instance of the
+     * [QuizApi] interface, which is used to interact with the quiz API. It leverages Retrofit
+     * to create a type-safe API client.
+     *
+     * @param retrofit The pre-configured [Retrofit] instance used to build the API service.
+     *                 This instance should already be set up with the base URL, converters,
+     *                 and any necessary interceptors.
+     * @return An instance of [QuizApi] that can be used to make API calls.
+     * @throws IllegalStateException if Retrofit is not properly configured
+     */
     @Provides
     @Singleton
     fun provideApiService(retrofit: Retrofit): QuizApi {

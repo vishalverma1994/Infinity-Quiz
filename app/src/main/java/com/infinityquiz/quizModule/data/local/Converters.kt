@@ -5,6 +5,10 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.infinityquiz.quizModule.domain.model.Content
 
+/**
+ * Converters class provides methods to convert complex data types to and from strings
+ * for storage in a Room database. It uses Gson for JSON serialization and deserialization.
+ */
 class Converters {
     private val gson = Gson()
 

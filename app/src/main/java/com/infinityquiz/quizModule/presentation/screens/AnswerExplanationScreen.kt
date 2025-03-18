@@ -11,11 +11,25 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.text.HtmlCompat
 import coil.compose.AsyncImage
 import com.infinityquiz.quizModule.domain.model.Content
 
+/**
+ * [AnswerExplanationScreen] displays the explanation of an answer, which can include images and text.
+ *
+ * This composable function takes a list of [Content] objects representing the solution and a callback
+ * function for handling the share action. It iterates through the solution content and renders it
+ * appropriately based on its `contentType`. Images are displayed using [AsyncImage], and text content
+ * is rendered using [Text] after being parsed from HTML.
+ *
+ * @param solution A list of [Content] objects representing the solution. Each [Content] object
+ *                  contains the `contentType` (e.g., "image", "text") and `contentData` which is
+ *                  the actual content (e.g., image URL, HTML string). This parameter can be null.
+ * @param onShareClick A lambda function that is called when the "Share" button is clicked.
+ */
 @Composable
 fun AnswerExplanationScreen(
     solution: List<Content>?,
@@ -24,7 +38,6 @@ fun AnswerExplanationScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp)
     ) {
         Column(
             modifier = Modifier
@@ -47,7 +60,7 @@ fun AnswerExplanationScreen(
                     }
                 }
             }
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(10.dp))
             Button(onClick = onShareClick) {
                 Text("Share")
             }
@@ -55,9 +68,9 @@ fun AnswerExplanationScreen(
     }
 }
 
-//
-//@Preview
-//@Composable
-//fun AnswerExplanationScreenPreview() {
-//    AnswerExplanationScreen(true, emptyList(), {}, {}, false)
-//}
+
+@Preview
+@Composable
+fun AnswerExplanationScreenPreview() {
+    AnswerExplanationScreen(listOf(Content("text", "The capital of France is Paris."))) { }
+}
