@@ -7,5 +7,5 @@ import retrofit2.http.GET
 interface QuizApi {
 
     @GET("mcq/content")
-    suspend fun getQuizList(): Response<QuizDto>
+    suspend fun getQuizList(): Response<List<QuizDto>>
 }

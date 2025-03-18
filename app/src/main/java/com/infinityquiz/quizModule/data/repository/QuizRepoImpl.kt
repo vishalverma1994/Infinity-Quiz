@@ -1,11 +1,12 @@
 package com.infinityquiz.quizModule.data.repository
 
-import com.infinityquiz.quizModule.data.dto.QuizDto
+import com.infinityquiz.quizModule.data.dto.toQuestion
 import com.infinityquiz.quizModule.data.local.QuizDao
-import com.infinityquiz.quizModule.data.local.QuizDataStore
-import com.infinityquiz.quizModule.data.local.QuizEntity
+import com.infinityquiz.quizModule.data.local.toQuestion
+import com.infinityquiz.quizModule.data.local.toQuizEntity
 import com.infinityquiz.quizModule.data.network.QuizApi
-import com.infinityquiz.quizModule.domain.repository.QuizRepo
+import com.infinityquiz.quizModule.domain.model.Question
+import com.infinityquiz.quizModule.domain.repository.QuizRepository
 import com.infinityquiz.quizModule.util.Either
 import com.infinityquiz.quizModule.util.NetworkError
 import kotlinx.coroutines.CoroutineDispatcher
@@ -19,12 +20,11 @@ import kotlin.coroutines.cancellation.CancellationException
 data class QuizRepoImpl @Inject constructor(
     private val apiService: QuizApi,
     private val quizDao: QuizDao,
-    private val quizDataStore: QuizDataStore,
     private val ioCoroutineDispatcher: CoroutineDispatcher = Dispatchers.IO
-): QuizRepo {
+) : QuizRepository {
 
 
-    override suspend fun getQuizzes(): Either<NetworkError, QuizDto> {
+    override suspend fun getQuizzes(): Either<NetworkError, List<Question>> {
         return withContext(ioCoroutineDispatcher) {
             return@withContext try {
                 val response = apiService.getQuizList()
@@ -32,10 +32,10 @@ data class QuizRepoImpl @Inject constructor(
                     val body = response.body()
                     return@withContext if (body != null) {
                         // todo convert body dto to domain model using mapper here
-                        if (body.quizList.isNullOrEmpty()) {
+                        if (body.isEmpty()) {
                             Either.Failure(NetworkError.EmptyDataFound)
                         } else
-                            Either.Success(body)
+                            Either.Success(data = body.map { it.toQuestion() })
                     } else {
                         Either.Failure(NetworkError.NoBodyFound)
                     }
@@ -46,7 +46,7 @@ data class QuizRepoImpl @Inject constructor(
                 when (e) {
                     is CancellationException -> throw e
                     is HttpException -> {
-                        return@withContext Either.Failure(NetworkError.ServerError(e.code()?:0, e.message?:""))
+                        return@withContext Either.Failure(NetworkError.ServerError(e.code(), e.message ?: ""))
                     }
 
                     is IOException -> {
@@ -66,7 +66,20 @@ data class QuizRepoImpl @Inject constructor(
         }
     }
 
-    private suspend fun insertQuizList(quizList: List<QuizEntity>) {
-        quizDao.insertAll(quizList)
+
+    override suspend fun getAllBookmarkedQuestions(): List<Question> {
+        return quizDao.getBookmarkQuizList().map { it.toQuestion() }
+    }
+
+    override suspend fun bookmarkQuestion(question: Question) {
+        quizDao.saveBookmark(question.toQuizEntity())
+    }
+
+    override suspend fun unbookmarkQuestion(question: Question) {
+        quizDao.removeBookmark(question.toQuizEntity())
+    }
+
+    override suspend fun isQuestionBookmarked(questionId: String): Boolean {
+        return quizDao.isQuestionBookmarked(questionId)
     }
 }

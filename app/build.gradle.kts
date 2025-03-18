@@ -81,6 +81,7 @@ dependencies {
     implementation (libs.androidx.datastore.preferences)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.ccp)
+    implementation(libs.coil.compose)
     testImplementation (libs.kotlinx.coroutines.test)
     testImplementation (libs.mockito.core)
     testImplementation (libs.mockito.inline)

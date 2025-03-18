@@ -1,23 +1,24 @@
 package com.infinityquiz.quizModule.data.local
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import androidx.room.Transaction
+import com.infinityquiz.quizModule.data.dto.QuizDto
 
 @Dao
 interface QuizDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertAll(quizList: List<QuizEntity>)
+    suspend fun saveBookmark(quiz: QuizEntity)
+
+    @Delete
+    suspend fun removeBookmark(quiz: QuizEntity)
 
     @Query("SELECT * FROM quiz")
-    suspend fun getAllQuiz(): List<QuizEntity>
+    suspend fun getBookmarkQuizList(): List<QuizEntity>
 
-    @Transaction
-    suspend fun updateAndGetQuiz(exchangeRates: List<QuizEntity>): List<QuizEntity> {
-        insertAll(exchangeRates)
-        return getAllQuiz()
-    }
+    @Query("SELECT EXISTS(SELECT * FROM quiz WHERE uuidIdentifier = :questionId)")
+    suspend fun isQuestionBookmarked(questionId: String):Boolean
 }
