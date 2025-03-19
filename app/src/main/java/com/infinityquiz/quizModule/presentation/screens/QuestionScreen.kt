@@ -1,5 +1,6 @@
 package com.infinityquiz.quizModule.presentation.screens
 
+import android.media.MediaPlayer
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -19,6 +20,8 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -30,10 +33,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.text.HtmlCompat
 import coil.compose.AsyncImage
+import com.infinityquiz.R
 import com.infinityquiz.quizModule.domain.model.Content
 import com.infinityquiz.quizModule.domain.model.Question
 import com.infinityquiz.quizModule.presentation.component.SkipBookMarkQuestion
 import com.infinityquiz.quizModule.util.shareText
+import com.infinityquiz.quizModule.util.startMusic
+import com.infinityquiz.quizModule.util.stopMusic
 import java.util.Locale
 
 /**
@@ -57,9 +63,27 @@ fun QuestionScreen(
     onSkip: () -> Unit = {},
     onBookmarkToggle: () -> Unit = {},
     isBookmarked: Boolean, updatedTimer: Int,
-    selectedOption: Int
+    selectedOption: Int,
+    onSoundPlay: (Boolean) -> Unit = {}
 ) {
     val context = LocalContext.current
+    val correctSound = remember { MediaPlayer.create(context, R.raw.correct_answer) }
+    val wrongSound = remember { MediaPlayer.create(context, R.raw.wrong_answer) }
+
+    correctSound.setOnCompletionListener {
+        onSoundPlay.invoke(true)
+    }
+    wrongSound.setOnCompletionListener {
+        onSoundPlay.invoke(true)
+    }
+
+    DisposableEffect(Unit) {
+        onDispose {
+            correctSound.release()
+            wrongSound.release()
+        }
+    }
+
     if (question == null) {
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
             CircularProgressIndicator()
@@ -85,10 +109,7 @@ fun QuestionScreen(
                         .padding(vertical = 8.dp),
                     textAlign = TextAlign.Center
                 )
-                Text("Question: ${question.sort}",
-                    style = MaterialTheme.typography.titleMedium,
-                    modifier = Modifier.padding(vertical = 8.dp)
-                )
+
                 // Display image based on question type
                 when (question.questionType) {
                     "image" -> {
@@ -137,7 +158,16 @@ fun QuestionScreen(
                         else -> Modifier
                     }
                     Button(
-                        onClick = { onAnswerSelected(index + 1) },
+                        onClick = {
+                            onAnswerSelected(index + 1)
+                            if (isCorrect) {
+                                onSoundPlay.invoke(true)
+                                correctSound.start()
+                            } else {
+                                onSoundPlay.invoke(true)
+                                wrongSound.start()
+                            }
+                        },
                         modifier = Modifier
                             .fillMaxWidth()
                             .then(modifier)
@@ -202,6 +232,7 @@ private fun QuestionScreenPreview() {
         onBookmarkToggle = {},
         isBookmarked = true,
         updatedTimer = 30,
-        selectedOption = 2
+        selectedOption = 2,
+        onSoundPlay = { isMusicPlaying ->  }
     )
 }

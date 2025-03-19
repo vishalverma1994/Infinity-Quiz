@@ -18,7 +18,7 @@ data class Question(
     val option4: String,
     val correctOption: Int,
     val solution: List<Content>,
-    val sort: Int = 0 ,
+    val sort: Int,
 )
 
 data class Content(

@@ -25,6 +25,7 @@ data class QuizEntity(
     val option3: String,
     val option4: String,
     val correctOption: Int,
+    val sort: Int ,
     val solution: List<Content>
 )
 
@@ -47,6 +48,7 @@ fun Question.toQuizEntity(): QuizEntity {
         option3 = option3,
         option4 = option4,
         correctOption = correctOption,
+        sort = sort,
         solution = solution
     )
 }
@@ -69,6 +71,7 @@ fun QuizEntity.toQuestion(): Question {
         option3 = option3,
         option4 = option4,
         correctOption = correctOption,
+        sort = sort,
         solution = solution
     )
 }

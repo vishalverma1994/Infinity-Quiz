@@ -100,8 +100,8 @@ fun QuizScreen(
 
             else -> {
                 LaunchedEffect(Unit) {
-                    isMusicPlaying = true
-                    startMusic(context)
+                    if (isMusicPlaying)
+                        startMusic(context)
                 }
 
                 // Music Toggle Button inside the else part
@@ -116,7 +116,7 @@ fun QuizScreen(
                     },
                     modifier = Modifier
                         .align(Alignment.TopEnd)
-                        .padding(vertical = 10.dp)
+                        .padding(vertical = 20.dp)
                         .padding(16.dp)
                 ) {
                     Icon(
@@ -140,6 +140,13 @@ fun QuizScreen(
                     onBookmarkToggle = { viewModel.toggleBookmark() },
                     isBookmarked = isBookmarked, updatedTimer,
                     selectedOption = quizState.selectedOption,
+                    onSoundPlay = { isPlaying ->
+                        if (isMusicPlaying) {
+                            if (isPlaying)
+                                startMusic(context)
+                            else stopMusic(context)
+                        }
+                    }
                 )
             }
         }

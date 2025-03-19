@@ -175,9 +175,6 @@ class QuizViewModel @Inject constructor(
      *
      * @param timer The duration (in seconds) for the timer for the next question.
      * @param isFromDelight A boolean indicating whether the transition is coming from a "delight" screen.
-     *                      If true, it means the user was just on a "delight" screen and we should NOT increment the `currentIndex`
-     *                      or show the delight screen again.
-     *
      */
     fun moveToNextQuestion(timer: Int, isFromDelight: Boolean) {
         stopTimer()
