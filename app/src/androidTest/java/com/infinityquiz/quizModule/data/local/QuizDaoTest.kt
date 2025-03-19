@@ -2,8 +2,6 @@ package com.infinityquiz.quizModule.data.local
 
 import android.content.Context
 import androidx.room.Room
-import org.junit.Before
-import org.junit.Test
 import androidx.test.core.app.ApplicationProvider
 import com.infinityquiz.quizModule.domain.model.Content
 import junit.framework.TestCase.assertEquals
@@ -11,6 +9,8 @@ import junit.framework.TestCase.assertFalse
 import junit.framework.TestCase.assertTrue
 import kotlinx.coroutines.runBlocking
 import org.junit.After
+import org.junit.Before
+import org.junit.Test
 
 class QuizDaoTest {
 
