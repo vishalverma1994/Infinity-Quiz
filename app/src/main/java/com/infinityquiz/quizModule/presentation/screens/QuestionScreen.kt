@@ -38,8 +38,6 @@ import com.infinityquiz.quizModule.domain.model.Content
 import com.infinityquiz.quizModule.domain.model.Question
 import com.infinityquiz.quizModule.presentation.component.SkipBookMarkQuestion
 import com.infinityquiz.quizModule.util.shareText
-import com.infinityquiz.quizModule.util.startMusic
-import com.infinityquiz.quizModule.util.stopMusic
 import java.util.Locale
 
 /**

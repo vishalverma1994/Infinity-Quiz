@@ -102,7 +102,6 @@ fun QuizNavHost(navController: NavHostController) {
                 mode = quizRoute.mode,
                 timer = quizRoute.time,
                 onQuizFinished = { correctScore, totalScore ->
-                    //navigate to score screen
                     navController.navigate(ScoreRoute(correctScore = correctScore, totalScore = totalScore))
                 })
         }
